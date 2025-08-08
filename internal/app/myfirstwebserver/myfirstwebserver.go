@@ -5,12 +5,14 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
+	"github.com/ttahaiyana/my-first-web-server/storage"
 )
 
 type API struct {
-	config Config
-	logger *logrus.Logger
-	router mux.Router
+	config  Config
+	logger  *logrus.Logger
+	router  mux.Router
+	storage *storage.Storage
 }
 
 func New(config Config) *API {
@@ -28,6 +30,11 @@ func (a *API) Start() error {
 	}
 
 	a.configureRouter()
+
+	err = a.configureStorage()
+	if err != nil {
+		return err
+	}
 
 	a.logger.Info("starting http server at port", a.config.BindAddr)
 

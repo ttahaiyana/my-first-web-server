@@ -1,10 +1,13 @@
 package myfirstwebserver
 
 import (
-	"net/http"
-
 	"github.com/sirupsen/logrus"
+
 	"github.com/ttahaiyana/my-first-web-server/storage"
+)
+
+var (
+	prefix string = "/api/v1"
 )
 
 func (a *API) configureLogger() error {
@@ -17,9 +20,13 @@ func (a *API) configureLogger() error {
 }
 
 func (a *API) configureRouter() {
-	a.router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Hello! It's me"))
-	})
+	a.router.HandleFunc(prefix+"/articles", a.GetAllArticles).Methods("GET")
+	a.router.HandleFunc(prefix+"/articles/{id}", a.GetArticleById).Methods("GET")
+	a.router.HandleFunc(prefix+"/articles", a.CreateArticle).Methods("POST")
+	a.router.HandleFunc(prefix+"/articles/{id}", a.DeleteArticle).Methods("DELETE")
+	a.router.HandleFunc(prefix+"/atricles/{id}", a.UpdateArticle).Methods("PUT")
+
+	a.router.HandleFunc(prefix+"/users", a.CreateUser).Methods("GET")
 }
 
 func (a *API) configureStorage() error {

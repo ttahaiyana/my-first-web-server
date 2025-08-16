@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"io/ioutil"
 	"log"
 
 	"github.com/BurntSushi/toml"
@@ -19,9 +20,14 @@ func init() {
 func main() {
 	flag.Parse()
 
+	data, err := ioutil.ReadFile(*configPath)
+	if err != nil {
+		log.Println("faild read from file. using default configs. ", err)
+	}
+
 	config := myfirstwebserver.NewConfig()
 
-	_, err := toml.Decode(*configPath, &config)
+	_, err = toml.Decode(string(data), &config)
 	if err != nil {
 		log.Println("faild read from file. using default configs. ", err)
 	}
@@ -29,5 +35,4 @@ func main() {
 	server := myfirstwebserver.New(*config)
 
 	log.Fatal(server.Start())
-
 }

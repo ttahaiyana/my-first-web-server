@@ -16,7 +16,7 @@ var (
 )
 
 func (ur *UserRepository) Create(u *models.User) (*models.User, error) {
-	query := fmt.Sprintf("INSERT INTO %s (password, login) VALUES ($1, $2) RETURNING id", tableUser)
+	query := fmt.Sprintf("INSERT INTO %s (login, password) VALUES ($1, $2) RETURNING id", tableUser)
 	if err := ur.storage.db.QueryRow(query, u.Login, u.Password).Scan(&u.ID); err != nil {
 		return nil, err
 	}
@@ -47,6 +47,7 @@ func (ur *UserRepository) SelectAll() ([]*models.User, error) {
 		return nil, err
 	}
 	defer rows.Close()
+
 	users := make([]*models.User, 0)
 	for rows.Next() {
 		u := models.User{}
@@ -58,4 +59,13 @@ func (ur *UserRepository) SelectAll() ([]*models.User, error) {
 		users = append(users, &u)
 	}
 	return users, nil
+}
+
+func (ur *UserRepository) DeleteAll() error {
+	query := fmt.Sprintf("TRUNCATE TABLE %s RESTART IDENTITY CASCADE", tableUser)
+	_, err := ur.storage.db.Exec(query)
+	if err != nil {
+		return err
+	}
+	return nil
 }

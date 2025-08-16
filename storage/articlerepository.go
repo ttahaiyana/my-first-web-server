@@ -37,7 +37,7 @@ func (ar *ArticleRepository) Delete(id int) (*models.Article, error) {
 		}
 		return a, nil
 	}
-	return nil, nil
+	return a, nil
 }
 
 func (ar *ArticleRepository) Update(a *models.Article) (*models.Article, error) {
@@ -67,7 +67,7 @@ func (ar *ArticleRepository) SelectAll() ([]*models.Article, error) {
 	articles := make([]*models.Article, 0)
 	for rows.Next() {
 		a := models.Article{}
-		err := rows.Scan(&a.Title, &a.Author, &a.Content)
+		err := rows.Scan(&a.ID, &a.Title, &a.Author, &a.Content)
 		if err != nil {
 			log.Println(err)
 			continue

@@ -1,6 +1,10 @@
 package storage
 
-import "database/sql"
+import (
+	"database/sql"
+
+	_ "github.com/lib/pq"
+)
 
 type Storage struct {
 	config            *Config
@@ -39,7 +43,7 @@ func (s *Storage) User() *UserRepository {
 	s.userRepository = &UserRepository{
 		storage: s,
 	}
-	return nil
+	return s.userRepository
 }
 
 func (s *Storage) Article() *ArticleRepository {
@@ -49,5 +53,5 @@ func (s *Storage) Article() *ArticleRepository {
 	s.articleRepository = &ArticleRepository{
 		storage: s,
 	}
-	return nil
+	return s.articleRepository
 }

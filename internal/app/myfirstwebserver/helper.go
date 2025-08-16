@@ -24,15 +24,17 @@ func (a *API) configureRouter() {
 	a.router.HandleFunc(prefix+"/articles/{id}", a.GetArticleById).Methods("GET")
 	a.router.HandleFunc(prefix+"/articles", a.CreateArticle).Methods("POST")
 	a.router.HandleFunc(prefix+"/articles/{id}", a.DeleteArticle).Methods("DELETE")
-	a.router.HandleFunc(prefix+"/atricles/{id}", a.UpdateArticle).Methods("PUT")
+	a.router.HandleFunc(prefix+"/atricles", a.UpdateArticle).Methods("PUT")
 
-	a.router.HandleFunc(prefix+"/users", a.CreateUser).Methods("GET")
+	a.router.HandleFunc(prefix+"/users", a.CreateUser).Methods("POST")
+	a.router.HandleFunc(prefix+"/users", a.DeleteAllUsers).Methods("DELETE")
+	a.router.HandleFunc(prefix+"/users/auth", a.PostToAuth).Methods("POST")
 }
 
 func (a *API) configureStorage() error {
 	storage := storage.NewStorage(*a.config.Storage)
 	if err := storage.Open(); err != nil {
-		return nil
+		return err
 	}
 	a.storage = storage
 	return nil
